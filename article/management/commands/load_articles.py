@@ -13,13 +13,17 @@ def save_articles(articles: list[Article]):
 class Command(BaseCommand):
     help = 'Load news from dataset "zloelias/lenta-ru"'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--take_count', type=int, default=1000)
+
     def handle(self, *args, **options):
+        take_count = options['take_count']
         topic_cache = {topic.name: topic for topic in Topic.objects.all()}
 
         with transaction.atomic():
 
             Article.objects.all().delete()
-            ds = load_dataset('zloelias/lenta-ru', split='train', streaming=True).take(100_000)
+            ds = load_dataset('zloelias/lenta-ru', split='train', streaming=True).take(take_count)
 
             self.stdout.write('Start...')
             article_buffer = []
