@@ -1,4 +1,5 @@
 from django.db import models
+from pgvector.django import VectorField
 
 
 class Topic(models.Model):
@@ -15,3 +16,14 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ArticleEmbedding(models.Model):
+    article = models.ForeignKey(
+        Article,
+        on_delete=models.CASCADE,
+        related_name='embedding',
+        null=False,
+        blank=False,
+    )
+    embedding = VectorField(dimensions=384) # intfloat / multilingual-e5-small
