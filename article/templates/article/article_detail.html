@@ -5,4 +5,12 @@
     <h1>{{ article.title }}</h1>
     <div>{{ article.text }}</div>
 </div>
+
+<div class="container">
+    <ul>
+        {% for sim_article in similar_articles %}
+            <li>({{ sim_article.similarity_score }}) <a href="{% url 'article_detail' pk=sim_article.pk %}">{{ sim_article.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
