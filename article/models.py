@@ -1,5 +1,5 @@
 from django.db import models
-from pgvector.django import VectorField
+from pgvector.django import VectorField, HnswIndex
 
 
 class Topic(models.Model):
@@ -27,3 +27,14 @@ class ArticleEmbedding(models.Model):
         blank=False,
     )
     embedding = VectorField(dimensions=384) # intfloat / multilingual-e5-small
+
+    class Meta:
+        indexes = [
+            HnswIndex(
+                name='article_embedding_hnsw_idx',
+                fields=['embedding'],
+                opclasses=['vector_cosine_ops'],
+                m=16,
+                ef_construction=256,
+            )
+        ]
